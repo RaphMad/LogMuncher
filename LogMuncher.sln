@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Parsing", "Parsing\Parsing.fsproj", "{28534C49-8056-4135-B59D-CD7C3E44A0EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation", "Presentation\Presentation.csproj", "{8779865D-CB16-4342-B094-3722809A1816}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{28534C49-8056-4135-B59D-CD7C3E44A0EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28534C49-8056-4135-B59D-CD7C3E44A0EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28534C49-8056-4135-B59D-CD7C3E44A0EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8779865D-CB16-4342-B094-3722809A1816}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8779865D-CB16-4342-B094-3722809A1816}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8779865D-CB16-4342-B094-3722809A1816}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8779865D-CB16-4342-B094-3722809A1816}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
