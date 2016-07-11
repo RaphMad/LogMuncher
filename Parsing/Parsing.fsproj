@@ -55,7 +55,7 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="FrqLogFormat.fs" />
+    <Compile Include="FrqLogfileFormat.fs" />
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
