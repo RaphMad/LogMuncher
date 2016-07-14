@@ -4,8 +4,22 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="LogMuncher" Height="350" Width="525">
+        Title="LogMuncher" Height="500" Width="1300" Loaded="HandleLoaded">
     <Grid>
-        
+        <ListView x:Name="LogEntriesListView" 
+                  VirtualizingPanel.VirtualizationMode="Recycling">
+
+            <ListView.View>
+                <GridView ScrollViewer.IsDeferredScrollingEnabled="True">
+                    <GridViewColumn DisplayMemberBinding= "{Binding Path=Timestamp}" Header="Time" Width="140"/>
+                    <GridViewColumn DisplayMemberBinding= "{Binding Path=Severity}" Header="Severity" Width="50"/>
+                    <GridViewColumn DisplayMemberBinding= "{Binding Path=HostId}" Header="HostId" Width="80"/>
+                    <GridViewColumn DisplayMemberBinding= "{Binding Path=ContextId}" Header="ContextId" Width="70"/>
+                    <GridViewColumn DisplayMemberBinding= "{Binding Path=Title}" Header="Title" Width="180"/>
+                    <GridViewColumn DisplayMemberBinding= "{Binding Path=Message}" Header="Message" Width="720"/>
+                </GridView>
+
+            </ListView.View>
+        </ListView>
     </Grid>
 </Window>

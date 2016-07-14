@@ -7,17 +7,16 @@ module FrqLogfileFormat =
     // exposed types
     type Severity = DEBUG | INFO | WARN | ERROR | FATAL | ALERT | CRITICAL | NOTICE | TRACE
 
-    type LogEntry = { 
-        Timestamp: System.DateTime
-        Severity: Severity
-        HostId: string
-        ProcessOrContextId: string
-        Title: string
-        Message: string
-        }
+    type LogEntry(timestamp: System.DateTime, severity: Severity, hostId: string, contextId: string, title: string, message: string) =
+        member this.Timestamp = timestamp
+        member this.Severity = severity
+        member this.HostId = hostId
+        member this.ContextId = contextId
+        member this.Title = title
+        member this.Message = message
 
     // common parsers
-    let private space : Parser<unit,unit> = skipChar ' '
+    let private space = skipChar ' '
     let private period = skipChar '.'
     let private colon = skipChar ':'
     let private comma = skipChar ','
@@ -40,8 +39,8 @@ module FrqLogfileFormat =
                         pint32            |>> fun millisecond -> new System.DateTime(year, month, day, hour, minute, second, millisecond)
 
         let severity  = choice [stringReturn "DEBUG" DEBUG
-                                stringReturn "INFO" INFO
-                                stringReturn "WARN" WARN
+                                stringReturn "INFO"  INFO
+                                stringReturn "WARN"  WARN
                                 stringReturn "ERROR" ERROR
                                 stringReturn "FATAL" FATAL]
                         .>> spaces // the trailing spaces are not mentioned in the spec, but inserted by some aplications!
@@ -56,12 +55,9 @@ module FrqLogfileFormat =
                              (severity  .>> separator)
                              (processId .>> separator)
                              (title     .>> separator)
-                              message   <|  fun timestamp severity processId title message -> { Timestamp = timestamp
-                                                                                                Severity = severity
-                                                                                                HostId = System.String.Empty
-                                                                                                ProcessOrContextId = processId
-                                                                                                Title = title
-                                                                                                Message = message }
+                              message
+                              <|  fun timestamp severity processId title message -> 
+                                  new LogEntry(timestamp, severity, System.String.Empty, processId, title, message)
 
         let parse = optional <| skipRestOfLine true >>. // skip optional header line
                     many logEntry
@@ -74,8 +70,8 @@ module FrqLogfileFormat =
         let timestamp =  failOnException (textUntil ';' |>> System.DateTime.Parse)
 
         let severity  = choice [stringReturn "DEBUG"    DEBUG
-                                stringReturn "INFO"    INFO
-                                stringReturn "WARN"    WARN
+                                stringReturn "INFO"     INFO
+                                stringReturn "WARN"     WARN
                                 stringReturn "ERROR"    ERROR
                                 stringReturn "FATAL"    FATAL
                                 stringReturn "ALERT"    ALERT
@@ -89,6 +85,10 @@ module FrqLogfileFormat =
         let title = textUntil ';'
 
         let endOfMessage = skipChar ';' .>> (skipNewline <|> eof)
+
+        // major performance hog, since 'followedBy' needs to backtrack
+        // this is however needed, since LifeX Logs violate the following rule from the V2 spec:
+        // 'If the field is not enclosed with double quotes '"', the semicolon ';' character may not appear inside the message.'
         let message = manyCharsTill anyChar (followedBy endOfMessage)
 
         let logEntry = timestamp .>> separator >>= fun timestamp ->
@@ -96,12 +96,7 @@ module FrqLogfileFormat =
                        hostId    .>> separator >>= fun hostId ->
                        contextId .>> separator >>= fun contextId ->
                        title     .>> separator >>= fun title ->
-                       message                 |>> fun message -> { Timestamp = timestamp
-                                                                    Severity = severity
-                                                                    HostId = hostId
-                                                                    ProcessOrContextId = contextId
-                                                                    Title = title
-                                                                    Message = message }
+                       message                 |>> fun message -> new LogEntry(timestamp, severity, hostId, contextId, title, message)
 
         let parse = optional <| skipRestOfLine true >>. // skip optional header line
                     sepEndBy logEntry endOfMessage
